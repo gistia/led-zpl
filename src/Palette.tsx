@@ -19,9 +19,12 @@ const ComponentIcons = {
 };
 
 const createDefaultComponent = (type: ComponentType): AllComponents => {
+  const id = Date.now().toString();
+
   switch (type) {
     case ComponentType.Text:
       return {
+        id,
         type,
         x: 0,
         y: 0,
@@ -31,13 +34,37 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
         height: 20,
       };
     case ComponentType.Barcode:
-      return { type, x: 0, y: 0, barcode: "12345678", width: 100, height: 40 };
+      return {
+        id,
+        type,
+        x: 0,
+        y: 0,
+        barcode: "12345678",
+        width: 100,
+        height: 40,
+      };
     case ComponentType.Image:
-      return { type, x: 0, y: 0, src: "default.jpg", width: 100, height: 100 };
+      return {
+        id,
+        type,
+        x: 0,
+        y: 0,
+        src: null,
+        width: 100,
+        height: 100,
+      };
     case ComponentType.Shape:
-      return { type, x: 0, y: 0, color: "red", width: 50, height: 50 };
+      return { id, type, x: 0, y: 0, color: "red", width: 50, height: 50 };
     case ComponentType.Icon:
-      return { type, x: 0, y: 0, icon: "default-icon", width: 30, height: 30 };
+      return {
+        id,
+        type,
+        x: 0,
+        y: 0,
+        icon: "default-icon",
+        width: 30,
+        height: 30,
+      };
     default:
       throw new Error("Invalid component type");
   }

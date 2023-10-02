@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Component } from "./types";
+import { AllComponents } from "./types";
 
 const DEFAULT_WIDTH = 500;
 const DEFAULT_HEIGHT = 250;
@@ -9,11 +9,17 @@ interface Store {
   width: number;
   height: number;
   zoom: number;
-  components: Component[];
+  components: AllComponents[];
+  selectedComponents: AllComponents[];
   lastPosition: { x: number; y: number };
-  addComponent: (component: Component) => void;
-  removeComponent: (component: Component) => void;
-  updateComponent: (component: Component) => void;
+
+  addComponent: (component: AllComponents) => void;
+  removeComponent: (component: AllComponents) => void;
+  updateComponent: (component: AllComponents) => void;
+
+  selectComponent: (component: AllComponents) => void;
+  toggleComponentSelection: (component: AllComponents) => void;
+  clearSelection: () => void;
 }
 
 export const useStore = create<Store>((set) => ({
@@ -21,9 +27,10 @@ export const useStore = create<Store>((set) => ({
   height: DEFAULT_HEIGHT,
   zoom: 1,
   components: [],
+  selectedComponents: [],
   lastPosition: { x: 5, y: 5 },
 
-  addComponent: (component: Component) =>
+  addComponent: (component: AllComponents) =>
     set((state) => {
       const { x, y } = state.lastPosition;
 
@@ -34,6 +41,7 @@ export const useStore = create<Store>((set) => ({
 
       const newComponent = {
         ...component,
+        id: Date.now().toString(),
         x: newPosition.x,
         y: newPosition.y,
       };
@@ -43,14 +51,33 @@ export const useStore = create<Store>((set) => ({
         components: [...state.components, newComponent],
       };
     }),
-  removeComponent: (component: Component) =>
+  updateComponent: (updatedComponent: AllComponents) =>
     set((state) => ({
-      components: state.components.filter((c) => c !== component),
-    })),
-  updateComponent: (component: Component) =>
-    set((state) => ({
-      components: state.components.map((c) =>
-        c === component ? component : c
+      components: state.components.map((comp) =>
+        comp.id === updatedComponent.id ? updatedComponent : comp
       ),
+    })),
+  removeComponent: (componentToRemove: AllComponents) =>
+    set((state) => ({
+      components: state.components.filter(
+        (comp) => comp.id !== componentToRemove.id
+      ),
+    })),
+
+  selectComponent: (component: AllComponents) =>
+    set(() => ({
+      selectedComponents: [component],
+    })),
+  toggleComponentSelection: (component: AllComponents) =>
+    set((state) => ({
+      selectedComponents: state.selectedComponents.some(
+        (comp) => comp.id === component.id
+      )
+        ? state.selectedComponents.filter((comp) => comp.id !== component.id)
+        : [...state.selectedComponents, component],
+    })),
+  clearSelection: () =>
+    set(() => ({
+      selectedComponents: [],
     })),
 }));

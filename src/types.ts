@@ -7,6 +7,7 @@ export enum ComponentType {
 }
 
 export type Component = {
+  id: string;
   type: ComponentType;
   x: number;
   y: number;
@@ -14,6 +15,8 @@ export type Component = {
 
 export type TextComponent = Component & {
   type: ComponentType.Text;
+  width: number;
+  height: number;
   text: string;
   fontSize: number;
 };
@@ -27,7 +30,7 @@ export type BarcodeComponent = Component & {
 
 export type ImageComponent = Component & {
   type: ComponentType.Image;
-  src: string;
+  src: string | null;
   width: number;
   height: number;
 };
