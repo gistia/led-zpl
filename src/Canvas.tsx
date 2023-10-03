@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Barcode from "./components/Barcode";
 import Image from "./components/Image";
 import Text from "./components/Text";
 import { useLedStore } from "./store";
@@ -21,7 +22,6 @@ const Canvas: React.FC = () => {
         !(event.target instanceof HTMLInputElement) &&
         !(event.target instanceof HTMLTextAreaElement)
       ) {
-        console.log(event.target);
         const selected = selectedComponents;
         selected.forEach((component) => {
           removeComponent(component);
@@ -74,13 +74,19 @@ const Canvas: React.FC = () => {
             case ComponentType.Image:
               return (
                 <Image
-                  key={component.id}
+                  key={`${component.id}`}
                   {...component}
                   onClick={(event) => handleComponentClick(event, component)}
                 />
               );
-            // case ComponentType.Barcode:
-            //   return <BarcodeComponentRenderer key={index} {...component} />;
+            case ComponentType.Barcode:
+              return (
+                <Barcode
+                  key={`${component.id}-${component.value}-${component.barcodeType}`}
+                  {...component}
+                  onClick={(event) => handleComponentClick(event, component)}
+                />
+              );
             // case ComponentType.Shape:
             //   return <ShapeComponentRenderer key={index} {...component} />;
             // case ComponentType.Icon:

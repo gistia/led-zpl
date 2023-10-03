@@ -120,13 +120,9 @@ const Image: React.FC<ImageProps> = ({
   };
 
   const handleImageLoad = () => {
-    console.log("image loaded");
     if (imgRef.current) {
       const imgWidth = imgRef.current.naturalWidth;
       const imgHeight = imgRef.current.naturalHeight;
-
-      console.log("image width", imgWidth);
-      console.log("image height", imgHeight);
 
       updateComponent({
         ...{ id, x, y, width: imgWidth, height: imgHeight, src: currentSrc },

@@ -40,9 +40,10 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
         type,
         x: 0,
         y: 0,
-        barcode: "12345678",
+        value: "12345678",
+        barcodeType: "CODE128",
         width: 100,
-        height: 40,
+        height: 80,
         isNew: true,
       };
     case ComponentType.Image:

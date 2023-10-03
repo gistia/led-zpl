@@ -12,7 +12,7 @@ export type Component = {
   x: number;
   y: number;
   isNew?: boolean;
-  lastModified?: string;
+  lastModified?: number;
 };
 
 export type TextComponent = Component & {
@@ -25,7 +25,16 @@ export type TextComponent = Component & {
 
 export type BarcodeComponent = Component & {
   type: ComponentType.Barcode;
-  barcode: string;
+  value: string;
+  barcodeType:
+    | "CODE39"
+    | "CODE128"
+    | "EAN13"
+    | "ITF14"
+    | "MSI"
+    | "pharmacode"
+    | "codabar"
+    | "upc";
   width: number;
   height: number;
 };

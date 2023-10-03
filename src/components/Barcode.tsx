@@ -1,79 +1,86 @@
 import React, { useEffect, useState } from "react";
+import ReactBarcode from "react-barcode";
 import { Rnd } from "react-rnd";
 import { useLedStore } from "../store";
-import { ComponentType, TextComponent } from "../types";
+import { BarcodeComponent, ComponentType } from "../types";
 
-interface TextProps extends Omit<TextComponent, "type"> {
+interface BarcodeProps extends Omit<BarcodeComponent, "type"> {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const Text: React.FC<TextProps> = ({
+const Barcode: React.FC<BarcodeProps> = ({
   id,
   x,
   y,
   width,
   height,
-  text,
-  fontSize,
+  value,
+  barcodeType,
   isNew,
   onClick,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [currentText, setCurrentText] = useState(text);
+  const [currentValue, setCurrentValue] = useState(value);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const updateComponent = useLedStore((state) => state.updateComponent);
   const selectedComponents = useLedStore((state) => state.selectedComponents);
   const isSelected = selectedComponents.some((comp) => comp.id === id);
 
-  const textStyle: React.CSSProperties = {
+  const barcodeStyle: React.CSSProperties = {
     width: width,
     height: height,
-    fontSize: fontSize,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
     boxSizing: "border-box",
     outline: isEditing || isSelected ? "2px solid blue" : "none",
   };
 
-  const handleTextDblClick = () => {
+  const handleBarcodeDblClick = () => {
     setIsEditing(true);
     setTimeout(() => {
-      inputRef.current?.select(); // Select the text inside the input
+      inputRef.current?.select();
     }, 0);
   };
 
   useEffect(() => {
     if (isNew) {
-      handleTextDblClick();
-      // Update the component to set isNew to false
+      handleBarcodeDblClick();
       updateComponent({
-        ...{ id, x, y, width, height, text, fontSize },
-        type: ComponentType.Text,
+        ...{ id, x, y, width, height, value, barcodeType },
+        type: ComponentType.Barcode,
         isNew: false,
       });
     }
   }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newText = event.target.value;
-    setCurrentText(newText);
-
-    // updateComponent({
-    //   ...{ id, x, y, width, height, text: newText, fontSize },
-    //   type: ComponentType.Text,
-    // });
+    const newBarcode = event.target.value;
+    setCurrentValue(newBarcode);
   };
 
   const handleInputBlur = () => {
     setIsEditing(false);
+    updateComponent({
+      ...{
+        id,
+        x,
+        y,
+        width,
+        height,
+        value: currentValue,
+        barcodeType,
+      },
+      type: ComponentType.Barcode,
+    });
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       setIsEditing(false);
     } else if (event.key === "Escape") {
-      setCurrentText(text);
+      setCurrentValue(value);
       setIsEditing(false);
     }
   };
@@ -86,10 +93,10 @@ const Text: React.FC<TextProps> = ({
         y: data.y,
         width,
         height,
-        text: currentText,
-        fontSize,
+        value: currentValue,
+        barcodeType,
       },
-      type: ComponentType.Text,
+      type: ComponentType.Barcode,
     });
   };
 
@@ -104,10 +111,10 @@ const Text: React.FC<TextProps> = ({
         y,
         width: newWidth,
         height: newHeight,
-        text: currentText,
-        fontSize,
+        value: currentValue,
+        barcodeType,
       },
-      type: ComponentType.Text,
+      type: ComponentType.Barcode,
     });
   };
 
@@ -115,9 +122,9 @@ const Text: React.FC<TextProps> = ({
     <Rnd
       position={{ x, y }}
       size={{ width, height }}
-      style={textStyle}
+      style={barcodeStyle}
       onClick={onClick}
-      onDoubleClick={handleTextDblClick}
+      onDoubleClick={handleBarcodeDblClick}
       onDragStop={handleDragStop}
       onResizeStop={handleResizeStop}
     >
@@ -125,17 +132,23 @@ const Text: React.FC<TextProps> = ({
         <input
           ref={inputRef}
           type="text"
-          value={currentText}
+          value={currentValue}
           onChange={handleInputChange}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
           autoFocus
+          style={{ textAlign: "center", width: "100%" }}
         />
       ) : (
-        currentText
+        <ReactBarcode
+          value={currentValue}
+          format={barcodeType}
+          width={1}
+          height={40}
+        />
       )}
     </Rnd>
   );
 };
 
-export default Text;
+export default Barcode;

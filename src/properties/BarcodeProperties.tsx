@@ -1,22 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLedStore } from "../store";
-import { TextComponent } from "../types";
+import { BarcodeComponent } from "../types";
 
-interface TextPropertiesProps {
-  component: TextComponent;
+interface BarcodePropertiesProps {
+  component: BarcodeComponent;
 }
 
-const TextProperties: React.FC<TextPropertiesProps> = ({ component }) => {
+const BarcodeProperties: React.FC<BarcodePropertiesProps> = ({ component }) => {
   const [localComponent, setLocalComponent] = useState(component);
   const updateComponent = useLedStore((state) => state.updateComponent);
 
+  useEffect(() => {
+    updateComponent(localComponent);
+  }, [localComponent?.barcodeType]);
+
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = event.target;
     setLocalComponent((prev) => ({
       ...prev,
-      [name]: name === "text" ? value : Number(value),
+      [name]:
+        name === "value" || name === "barcodeType" ? value : Number(value),
     }));
   };
 
@@ -29,15 +36,39 @@ const TextProperties: React.FC<TextPropertiesProps> = ({ component }) => {
       <div className="mb-4">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="barcodeType"
+        >
+          Barcode Type
+        </label>
+        <select
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="barcodeType"
+          name="barcodeType"
+          value={localComponent.barcodeType}
+          onChange={handleInputChange}
+        >
+          <option value="CODE128">Code 128</option>
+          <option value="CODE39">Code 39</option>
+          <option value="ean13">EAN-13</option>
+          <option value="itf14">ITF-14</option>
+          <option value="msi">MSI</option>
+          <option value="pharmacode">Pharmacode</option>
+          <option value="codabar">Codabar</option>
+          <option value="upc">UPC</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="text"
         >
-          Text
+          Value
         </label>
         <input
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="text"
-          name="text"
-          value={localComponent.text}
+          id="value"
+          name="value"
+          value={localComponent.value}
           onChange={handleInputChange}
           onBlur={handleBlur}
         />
@@ -114,4 +145,4 @@ const TextProperties: React.FC<TextPropertiesProps> = ({ component }) => {
   );
 };
 
-export default TextProperties;
+export default BarcodeProperties;

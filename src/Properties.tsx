@@ -1,8 +1,14 @@
 import React from "react";
+import BarcodeProperties from "./properties/BarcodeProperties";
 import ImageProperties from "./properties/ImageProperties";
 import TextProperties from "./properties/TextProperties";
 import { useLedStore } from "./store";
-import { AllComponents, ComponentType, ImageComponent } from "./types";
+import {
+  AllComponents,
+  BarcodeComponent,
+  ComponentType,
+  ImageComponent,
+} from "./types";
 
 type PropertiesPanelProps = {
   component: AllComponents;
@@ -14,6 +20,8 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ component }) => {
       return <TextProperties component={component} />;
     case ComponentType.Image:
       return <ImageProperties component={component as ImageComponent} />;
+    case ComponentType.Barcode:
+      return <BarcodeProperties component={component as BarcodeComponent} />;
     default:
       return <p>Select a component to view its properties.</p>;
   }
