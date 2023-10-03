@@ -101,8 +101,8 @@ const Barcode: React.FC<BarcodeProps> = ({
   };
 
   const handleResizeStop = (_: any, _direction: any, ref: any, _delta: any) => {
-    const newWidth = ref.style.width.replace("px", "");
-    const newHeight = ref.style.height.replace("px", "");
+    const newWidth = parseInt(ref.style.width.replace("px", ""), 10);
+    const newHeight = parseInt(ref.style.height.replace("px", ""), 10);
 
     updateComponent({
       ...{

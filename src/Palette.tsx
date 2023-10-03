@@ -1,21 +1,26 @@
 import React from "react";
 import { IconContext } from "react-icons";
-import {
-  FaBarcode,
-  FaIcons,
-  FaImage,
-  FaShapes,
-  FaTextHeight,
-} from "react-icons/fa";
+import { BiBarcode, BiImage } from "react-icons/bi";
+import { CgFormatText } from "react-icons/cg";
+import { LuShapes } from "react-icons/lu";
+import { TbIcons } from "react-icons/tb";
 import { useLedStore } from "./store";
 import { AllComponents, ComponentType } from "./types";
 
 const ComponentIcons = {
-  [ComponentType.Text]: <FaTextHeight />,
-  [ComponentType.Barcode]: <FaBarcode />,
-  [ComponentType.Image]: <FaImage />,
-  [ComponentType.Shape]: <FaShapes />,
-  [ComponentType.Icon]: <FaIcons />,
+  [ComponentType.Text]: <CgFormatText />,
+  [ComponentType.Barcode]: <BiBarcode />,
+  [ComponentType.Image]: <BiImage />,
+  [ComponentType.Shape]: <LuShapes />,
+  [ComponentType.Icon]: <TbIcons />,
+};
+
+const ComponentDescriptions = {
+  [ComponentType.Text]: "Text",
+  [ComponentType.Barcode]: "Barcode",
+  [ComponentType.Image]: "Image",
+  [ComponentType.Shape]: "Shape",
+  [ComponentType.Icon]: "Icon",
 };
 
 const createDefaultComponent = (type: ComponentType): AllComponents => {
@@ -95,8 +100,9 @@ const Palette: React.FC = () => {
   const icons = Object.entries(ComponentIcons).map(([type, icon]) => (
     <div
       key={type}
-      className="p-2 mb-3 cursor-pointer hover:bg-gray-100"
+      className="p-2 mb-3 cursor-pointer hover:bg-gray-200 hover:rounded-xl"
       onClick={() => handleIconClick(type as ComponentType)}
+      title={ComponentDescriptions[type as ComponentType]}
     >
       {icon}
     </div>
@@ -104,7 +110,7 @@ const Palette: React.FC = () => {
 
   return (
     <IconContext.Provider value={{ size: "1.7em" }}>
-      <div className="bg-white w-16 flex flex-col items-center flex-none border-solid border-1 border-gray-700 p-2">
+      <div className="bg-gray-100 w-16 flex flex-col items-center flex-none border-r border-gray-300 p-2">
         {icons}
       </div>
     </IconContext.Provider>

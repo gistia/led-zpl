@@ -32,14 +32,14 @@ const Properties: React.FC = () => {
 
   if (selectedComponents.length === 0 || selectedComponents.length > 1) {
     return (
-      <div className="bg-white w-80 flex-none border-solid border-1 border-gray-700"></div>
+      <div className="bg-gray-100 w-80 flex-none border-l border-gray-300"></div>
     );
   }
 
   const selectedComponent = selectedComponents[0];
 
   return (
-    <div className="bg-white w-80 flex-none border-solid border-1 border-gray-700 p-4">
+    <div className="bg-gray-100 w-80 flex-none border-l border-gray-300 p-4">
       <PropertiesPanel
         key={selectedComponent?.id + selectedComponent?.lastModified}
         component={selectedComponent}

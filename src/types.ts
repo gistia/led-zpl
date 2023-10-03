@@ -11,14 +11,14 @@ export type Component = {
   type: ComponentType;
   x: number;
   y: number;
+  width: number;
+  height: number;
   isNew?: boolean;
   lastModified?: number;
 };
 
 export type TextComponent = Component & {
   type: ComponentType.Text;
-  width: number;
-  height: number;
   text: string;
   fontSize: number;
 };
@@ -35,29 +35,21 @@ export type BarcodeComponent = Component & {
     | "pharmacode"
     | "codabar"
     | "upc";
-  width: number;
-  height: number;
 };
 
 export type ImageComponent = Component & {
   type: ComponentType.Image;
   src: string | null;
-  width: number;
-  height: number;
 };
 
 export type ShapeComponent = Component & {
   type: ComponentType.Shape;
-  width: number;
-  height: number;
   color: string;
 };
 
 export type IconComponent = Component & {
   type: ComponentType.Icon;
   icon: string;
-  width: number;
-  height: number;
 };
 
 export type AllComponents =
@@ -72,3 +64,16 @@ export type LabelDocument = {
   height: number;
   components: AllComponents[];
 };
+
+export enum CommandType {
+  AlignLeft = "align-left",
+  AlignCenter = "align-center",
+  AlignRight = "align-right",
+  AlignTop = "align-top",
+  AlignMiddle = "align-middle",
+  AlignBottom = "align-bottom",
+  BringForward = "bring-forward",
+  SendBackward = "send-backward",
+  BringToFront = "bring-to-front",
+  SendToBack = "send-to-back",
+}
