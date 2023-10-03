@@ -1,11 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Barcode from "./components/Barcode";
 import Image from "./components/Image";
 import Text from "./components/Text";
 import { useLedStore } from "./store";
 import { AllComponents, ComponentType } from "./types";
 
+const Grid: React.FC<{ gridSize: number; width: number; height: number }> = ({
+  gridSize,
+  width,
+  height,
+}) => {
+  return (
+    <div
+      className="absolute top-0 left-0"
+      style={{
+        marginTop: "-1px",
+        marginLeft: "-1px",
+      }}
+    >
+      {Array.from({ length: Math.floor(width / gridSize) }).map((_, xIndex) => (
+        <React.Fragment key={xIndex}>
+          {Array.from({ length: Math.floor(height / gridSize) }).map(
+            (_, yIndex) => (
+              <div
+                key={yIndex}
+                style={{
+                  position: "absolute",
+                  top: yIndex * gridSize,
+                  left: xIndex * gridSize,
+                  width: "1px",
+                  height: "1px",
+                  backgroundColor: "black",
+                }}
+              />
+            )
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
+
 const Canvas: React.FC = () => {
+  const [width, setWidth] = useState(500);
+  const [height, setHeight] = useState(250);
+
   const components = useLedStore((store) => store.components);
   const selectComponent = useLedStore((store) => store.selectComponent);
   const toggleComponentSelection = useLedStore(
@@ -14,6 +53,9 @@ const Canvas: React.FC = () => {
   const removeComponent = useLedStore((store) => store.removeComponent);
   const clearSelection = useLedStore((store) => store.clearSelection);
   const selectedComponents = useLedStore((store) => store.selectedComponents);
+  const gridSize = useLedStore((state) => state.gridSize);
+  const setGridSize = useLedStore((state) => state.setGridSize);
+  const showGrid = useLedStore((state) => state.showGrid);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -60,7 +102,14 @@ const Canvas: React.FC = () => {
       className="flex-grow bg-gray-200 grid place-items-center"
       onClick={handleClick}
     >
-      <div className="bg-white rounded-2xl canvas relative">
+      <div
+        className="bg-white rounded-2xl canvas relative"
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+        }}
+      >
+        {showGrid && <Grid gridSize={gridSize} width={width} height={height} />}
         {components.map((component) => {
           switch (component.type) {
             case ComponentType.Text:

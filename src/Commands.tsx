@@ -134,7 +134,7 @@ const Commands: React.FC = () => {
         className={`p-2 mb-3 ${
           isDisabled
             ? "opacity-50"
-            : "cursor-pointer hover:bg-gray-200 hover:rounded-xl"
+            : "cursor-pointer hover:bg-gray-200 rounded-xl"
         }`}
         onClick={() => handleIconClick(type as CommandType)}
         // title={ComponentDescriptions[type as ComponentType]}

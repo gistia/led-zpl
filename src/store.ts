@@ -13,6 +13,10 @@ interface Store {
   selectedComponents: AllComponents[];
   lastPosition: { x: number; y: number };
 
+  gridSize: number;
+  showGrid: boolean;
+  snapToGrid: boolean;
+
   addComponent: (component: AllComponents) => void;
   removeComponent: (component: AllComponents) => void;
   updateComponent: (component: AllComponents) => void;
@@ -27,6 +31,13 @@ interface Store {
   bringToFront: (component: AllComponents) => void;
   sendBackward: (component: AllComponents) => void;
   sendToBack: (component: AllComponents) => void;
+
+  setZoom: (zoom: number) => void;
+  setGridSize: (gridSize: number) => void;
+  setShowGrid: (showGrid: boolean) => void;
+  setSnapToGrid: (snapToGrid: boolean) => void;
+  toggleGrid: () => void;
+  toggleSnapToGrid: () => void;
 }
 
 export const useLedStore = create<Store>((set) => ({
@@ -36,6 +47,10 @@ export const useLedStore = create<Store>((set) => ({
   components: [],
   selectedComponents: [],
   lastPosition: { x: 5, y: 5 },
+
+  gridSize: 25,
+  showGrid: true,
+  snapToGrid: true,
 
   addComponent: (component: AllComponents) =>
     set((state) => {
@@ -240,4 +255,11 @@ export const useLedStore = create<Store>((set) => ({
       }
     });
   },
+
+  setZoom: (zoom: number) => set(() => ({ zoom })),
+  setGridSize: (gridSize: number) => set(() => ({ gridSize })),
+  setShowGrid: (showGrid: boolean) => set(() => ({ showGrid })),
+  setSnapToGrid: (snapToGrid: boolean) => set(() => ({ snapToGrid })),
+  toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
+  toggleSnapToGrid: () => set((state) => ({ snapToGrid: !state.snapToGrid })),
 }));
