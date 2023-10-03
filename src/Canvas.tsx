@@ -1,22 +1,27 @@
 import React, { useEffect } from "react";
 import Image from "./components/Image";
 import Text from "./components/Text";
-import { useStore } from "./store";
+import { useLedStore } from "./store";
 import { AllComponents, ComponentType } from "./types";
 
 const Canvas: React.FC = () => {
-  const components = useStore((store) => store.components);
-  const selectComponent = useStore((store) => store.selectComponent);
-  const toggleComponentSelection = useStore(
+  const components = useLedStore((store) => store.components);
+  const selectComponent = useLedStore((store) => store.selectComponent);
+  const toggleComponentSelection = useLedStore(
     (store) => store.toggleComponentSelection
   );
-  const removeComponent = useStore((store) => store.removeComponent);
-  const clearSelection = useStore((store) => store.clearSelection);
-  const selectedComponents = useStore((store) => store.selectedComponents);
+  const removeComponent = useLedStore((store) => store.removeComponent);
+  const clearSelection = useLedStore((store) => store.clearSelection);
+  const selectedComponents = useLedStore((store) => store.selectedComponents);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Delete" || event.key === "Backspace") {
+      if (
+        (event.key === "Delete" || event.key === "Backspace") &&
+        !(event.target instanceof HTMLInputElement) &&
+        !(event.target instanceof HTMLTextAreaElement)
+      ) {
+        console.log(event.target);
         const selected = selectedComponents;
         selected.forEach((component) => {
           removeComponent(component);
@@ -56,18 +61,16 @@ const Canvas: React.FC = () => {
         className="bg-white rounded-2xl canvas relative"
         onClick={handleClick}
       >
-        {components.map((component, index) => {
+        {components.map((component) => {
           switch (component.type) {
             case ComponentType.Text:
               return (
                 <Text
-                  key={component.id}
+                  key={`${component.id}-${component.text}`}
                   {...component}
                   onClick={(event) => handleComponentClick(event, component)}
                 />
               );
-            // case ComponentType.Barcode:
-            //   return <BarcodeComponentRenderer key={index} {...component} />;
             case ComponentType.Image:
               return (
                 <Image
@@ -76,6 +79,8 @@ const Canvas: React.FC = () => {
                   onClick={(event) => handleComponentClick(event, component)}
                 />
               );
+            // case ComponentType.Barcode:
+            //   return <BarcodeComponentRenderer key={index} {...component} />;
             // case ComponentType.Shape:
             //   return <ShapeComponentRenderer key={index} {...component} />;
             // case ComponentType.Icon:

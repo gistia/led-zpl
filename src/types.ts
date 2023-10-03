@@ -11,6 +11,8 @@ export type Component = {
   type: ComponentType;
   x: number;
   y: number;
+  isNew?: boolean;
+  lastModified?: string;
 };
 
 export type TextComponent = Component & {

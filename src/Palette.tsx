@@ -7,7 +7,7 @@ import {
   FaShapes,
   FaTextHeight,
 } from "react-icons/fa";
-import { useStore } from "./store";
+import { useLedStore } from "./store";
 import { AllComponents, ComponentType } from "./types";
 
 const ComponentIcons = {
@@ -32,6 +32,7 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
         fontSize: 14,
         width: 100,
         height: 20,
+        isNew: true,
       };
     case ComponentType.Barcode:
       return {
@@ -42,6 +43,7 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
         barcode: "12345678",
         width: 100,
         height: 40,
+        isNew: true,
       };
     case ComponentType.Image:
       return {
@@ -52,9 +54,19 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
         src: null,
         width: 100,
         height: 100,
+        isNew: true,
       };
     case ComponentType.Shape:
-      return { id, type, x: 0, y: 0, color: "red", width: 50, height: 50 };
+      return {
+        id,
+        type,
+        x: 0,
+        y: 0,
+        color: "red",
+        width: 50,
+        height: 50,
+        isNew: true,
+      };
     case ComponentType.Icon:
       return {
         id,
@@ -64,6 +76,7 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
         icon: "default-icon",
         width: 30,
         height: 30,
+        isNew: true,
       };
     default:
       throw new Error("Invalid component type");
@@ -71,7 +84,7 @@ const createDefaultComponent = (type: ComponentType): AllComponents => {
 };
 
 const Palette: React.FC = () => {
-  const addComponent = useStore((state) => state.addComponent);
+  const addComponent = useLedStore((state) => state.addComponent);
 
   const handleIconClick = (type: ComponentType) => {
     const component = createDefaultComponent(type);

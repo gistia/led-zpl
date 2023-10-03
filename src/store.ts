@@ -22,7 +22,7 @@ interface Store {
   clearSelection: () => void;
 }
 
-export const useStore = create<Store>((set) => ({
+export const useLedStore = create<Store>((set) => ({
   width: DEFAULT_WIDTH,
   height: DEFAULT_HEIGHT,
   zoom: 1,
@@ -51,12 +51,17 @@ export const useStore = create<Store>((set) => ({
         components: [...state.components, newComponent],
       };
     }),
-  updateComponent: (updatedComponent: AllComponents) =>
+  updateComponent: (component: AllComponents) => {
+    const updatedComponent = {
+      ...component,
+      lastModified: Date.now(),
+    };
     set((state) => ({
       components: state.components.map((comp) =>
         comp.id === updatedComponent.id ? updatedComponent : comp
       ),
-    })),
+    }));
+  },
   removeComponent: (componentToRemove: AllComponents) =>
     set((state) => ({
       components: state.components.filter(

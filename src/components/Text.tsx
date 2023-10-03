@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Rnd } from "react-rnd";
-import { useStore } from "../store";
+import { useLedStore } from "../store";
 import { ComponentType, TextComponent } from "../types";
 
 interface TextProps extends Omit<TextComponent, "type"> {
@@ -15,13 +15,14 @@ const Text: React.FC<TextProps> = ({
   height,
   text,
   fontSize,
+  isNew,
   onClick,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentText, setCurrentText] = useState(text);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const updateComponent = useStore((state) => state.updateComponent);
-  const selectedComponents = useStore((state) => state.selectedComponents);
+  const updateComponent = useLedStore((state) => state.updateComponent);
+  const selectedComponents = useLedStore((state) => state.selectedComponents);
   const isSelected = selectedComponents.some((comp) => comp.id === id);
 
   const textStyle: React.CSSProperties = {
@@ -42,14 +43,26 @@ const Text: React.FC<TextProps> = ({
     }, 0);
   };
 
+  useEffect(() => {
+    if (isNew) {
+      handleTextDblClick();
+      // Update the component to set isNew to false
+      updateComponent({
+        ...{ id, x, y, width, height, text, fontSize },
+        type: ComponentType.Text,
+        isNew: false,
+      });
+    }
+  }, []);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newText = event.target.value;
     setCurrentText(newText);
 
-    updateComponent({
-      ...{ id, x, y, width, height, text: newText, fontSize },
-      type: ComponentType.Text,
-    });
+    // updateComponent({
+    //   ...{ id, x, y, width, height, text: newText, fontSize },
+    //   type: ComponentType.Text,
+    // });
   };
 
   const handleInputBlur = () => {
@@ -80,13 +93,33 @@ const Text: React.FC<TextProps> = ({
     });
   };
 
+  const handleResizeStop = (_: any, direction: any, ref: any, delta: any) => {
+    const newWidth = ref.style.width.replace("px", "");
+    const newHeight = ref.style.height.replace("px", "");
+
+    updateComponent({
+      ...{
+        id,
+        x,
+        y,
+        width: newWidth,
+        height: newHeight,
+        text: currentText,
+        fontSize,
+      },
+      type: ComponentType.Text,
+    });
+  };
+
   return (
     <Rnd
-      default={{ x, y, width, height }}
+      position={{ x, y }}
+      size={{ width, height }}
       style={textStyle}
       onClick={onClick}
       onDoubleClick={handleTextDblClick}
       onDragStop={handleDragStop}
+      onResizeStop={handleResizeStop}
     >
       {isEditing ? (
         <input
