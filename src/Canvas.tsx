@@ -56,11 +56,11 @@ const Canvas: React.FC = () => {
   };
 
   return (
-    <div className="flex-grow bg-gray-200 grid place-items-center">
-      <div
-        className="bg-white rounded-2xl canvas relative"
-        onClick={handleClick}
-      >
+    <div
+      className="flex-grow bg-gray-200 grid place-items-center"
+      onClick={handleClick}
+    >
+      <div className="bg-white rounded-2xl canvas relative">
         {components.map((component) => {
           switch (component.type) {
             case ComponentType.Text:
